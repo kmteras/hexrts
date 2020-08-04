@@ -13,6 +13,9 @@ class HexRts : KtxGame<Screen>() {
         @JvmStatic
         fun main(args: Array<String>) {
             val config = LwjglApplicationConfiguration()
+            config.width = 800
+            config.height = 600
+            config.title = "HexRts"
             val application = HexRts()
             LwjglApplication(application, config)
         }

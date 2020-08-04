@@ -26,7 +26,7 @@ class TileGenerator {
 
         val blueTexture = Texture(bluePixel);
 
-        const val size = 16f
+        const val size = 32f
 
         fun getRenderTile(texture: Texture): RenderTile {
             val region = PolygonRegion(
