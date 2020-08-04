@@ -1,0 +1,22 @@
+plugins {
+    id 'application'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+group 'hexrts.desktop'
+version '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(":core")
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-script-runtime:$kotlinVersion"
+}
+
+application {
+    mainClassName = 'hexrts.desktop.HexRts'
+}
