@@ -4,6 +4,8 @@ plugins {
 
 ext {
     kotlinVersion = "1.3.72"
+    ktxVersion = "1.9.11-b1"
+    gdxVersion = '1.9.11'
 }
 
 group 'hexrts'
