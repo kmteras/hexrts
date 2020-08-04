@@ -10,22 +10,24 @@ import ktx.app.KtxGame
 
 class HexRts : KtxGame<Screen>() {
     companion object {
+        const val DEFAULT_WIDTH = 800
+        const val DEFAULT_HEIGHT = 600
+
         @JvmStatic
         fun main(args: Array<String>) {
             val config = LwjglApplicationConfiguration()
-            config.width = 800
-            config.height = 600
+            config.width = DEFAULT_WIDTH
+            config.height = DEFAULT_HEIGHT
             config.title = "HexRts"
+            config.forceExit = false
             val application = HexRts()
             LwjglApplication(application, config)
         }
     }
 
     override fun create() {
-        println("${Gdx.files}")
-
         println("Initialized ${Core.CORE}")
-        addScreen(RenderScreen())
+        addScreen(RenderScreen(DEFAULT_WIDTH.toFloat(), DEFAULT_HEIGHT.toFloat()))
         setScreen<RenderScreen>()
     }
 }
