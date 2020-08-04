@@ -6,6 +6,8 @@ plugins {
 group 'hexrts.desktop'
 version '0.0.1'
 
+sourceSets.main.resources.srcDirs = ["../core/assets"]
+
 repositories {
     mavenCentral()
 }
