@@ -15,4 +15,8 @@ class StorageFeature(private val capacity: Long) : BuildingFeature {
 
         storage[resourceType] = currentAmount + amount
     }
+
+    override fun toString(): String {
+        return "StorageFeature(capacity=$capacity, storage=$storage)"
+    }
 }

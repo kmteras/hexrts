@@ -12,4 +12,8 @@ abstract class Building(override val type: BuildingType) : BaseBuilding {
     override fun update(delta: Float) {
 
     }
+
+    override fun toString(): String {
+        return "Building(type=$type, features=$features)"
+    }
 }

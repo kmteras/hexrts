@@ -11,4 +11,8 @@ class TerrainTile(
     override fun update(delta: Float) {
 
     }
+
+    override fun toString(): String {
+        return "Tile(type=$type, building=$building)"
+    }
 }

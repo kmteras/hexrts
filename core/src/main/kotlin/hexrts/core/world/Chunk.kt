@@ -137,6 +137,18 @@ class Chunk(private val tiles: Array<Array<BaseTile>>) {
                     )
                 }
 
+                if (tile == tileSelector.selectedTile) {
+                    val selectedRegion = SandBorder.getTextureRegion(tilemap)
+
+                    batch.draw(
+                        selectedRegion,
+                        x * Tile.SIZE * sqrt(3f) + renderOffsetX,
+                        y * (Tile.SIZE * 1.5f - 1f),
+                        Tile.SIZE * sqrt(3f),
+                        Tile.SIZE * 2
+                    )
+                }
+
                 if (tile is TerrainTile && tile.building != null) {
                     val objectRegion = tile.building.type.getTextureRegion(objectTilemap)
 
