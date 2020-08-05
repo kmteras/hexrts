@@ -8,6 +8,7 @@ import hexrts.core.world.definition.TileType.*
 import hexrts.core.world.tile.BaseTile
 import hexrts.core.world.tile.TerrainTile
 import hexrts.core.world.tile.Tile
+import kotlin.math.floor
 import kotlin.math.sqrt
 
 // TODO: Add coordinates for chunks
@@ -27,8 +28,6 @@ class Chunk(
     fun render(batch: Batch, tilemap: Texture, objectTilemap: Texture, tileSelector: TileSelector) {
         tiles.forEachIndexed { y, xTiles ->
             xTiles.forEachIndexed { x, tile ->
-                val renderOffsetX = if (y % 2 == 0) 0f else Tile.SIZE * sqrt(3f) / 2
-
                 val textureRegion = tile.type.getTextureRegion(tilemap)
 
                 renderTile(batch, textureRegion, x, y)
@@ -43,11 +42,12 @@ class Chunk(
 
                 if (tile is TerrainTile && tile.building != null) {
                     val objectRegion = tile.building.type.getTextureRegion(objectTilemap)
+                    val renderOffsetX = getRenderOffset(y)
 
                     renderTexture(batch, objectRegion,
-                        x * Tile.SIZE * sqrt(3f) + renderOffsetX + Tile.SIZE / 2,
+                        x * Tile.WIDTH + renderOffsetX + Tile.SIZE / 2,
                         y * (Tile.SIZE * 1.5f - 1f) + Tile.SIZE / 2,
-                        Tile.SIZE * sqrt(3f) / 2,
+                        Tile.WIDTH / 2,
                         Tile.SIZE
                     )
                 }
@@ -59,10 +59,10 @@ class Chunk(
         renderTexture(
             batch,
             textureRegion,
-            gridX * Tile.SIZE * sqrt(3f) + getRenderOffset(gridY),
+            gridX * Tile.WIDTH + getRenderOffset(gridY),
             gridY * (Tile.SIZE * 1.5f - 1f),
-            Tile.SIZE * sqrt(3f),
-            Tile.SIZE * 2
+            Tile.WIDTH,
+            Tile.HEIGHT
         )
     }
 
@@ -70,7 +70,7 @@ class Chunk(
                               x: Float, y: Float,
                               width: Float, height: Float
     ) {
-        val chunkOffsetX = this.x * CHUNK_SIZE * Tile.SIZE * sqrt(3f);
+        val chunkOffsetX = this.x * CHUNK_SIZE * Tile.WIDTH;
         val chunkOffsetY = this.y * CHUNK_SIZE * (Tile.SIZE * 1.5f - 1f);
 
         batch.draw(
@@ -83,7 +83,7 @@ class Chunk(
     }
 
     private fun getRenderOffset(y: Int): Float {
-        return if (y % 2 == 0) 0f else Tile.SIZE * sqrt(3f) / 2
+        return if (y % 2 == 0) 0f else Tile.WIDTH / 2
     }
 
     companion object {

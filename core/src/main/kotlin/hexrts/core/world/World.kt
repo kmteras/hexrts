@@ -28,7 +28,7 @@ class World {
         return chunks[x]?.get(y)
     }
 
-    private fun addChunk(x: Int, y: Int) {
+    fun addChunk(x: Int, y: Int) {
         var yMap = chunks[x]
 
         if (yMap == null) {

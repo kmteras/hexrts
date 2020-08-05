@@ -44,15 +44,13 @@ class TileSelector(private val world: World) {
     }
 
     private fun findTileLocation(x: Int, y: Int): Pair<Int, Int> {
-        val row = kotlin.math.floor(y / (Tile.SIZE * 1.5)).toInt()
+        val row = floor(y / (Tile.SIZE * 1.5)).toInt()
         val col: Int
 
-        val tileWidth = Tile.SIZE * sqrt(3f)
-
         col = if (row % 2 == 0) {
-            kotlin.math.floor(x / tileWidth).toInt()
+            floor(x / Tile.WIDTH).toInt()
         } else {
-            kotlin.math.floor((x - tileWidth / 2) / tileWidth).toInt()
+            floor((x - Tile.WIDTH / 2) / Tile.WIDTH).toInt()
         }
 
         return Pair(col, row)

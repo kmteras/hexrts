@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport
 import hexrts.core.world.Chunk
 import hexrts.core.world.TileSelector
 import hexrts.core.world.World
+import hexrts.core.world.tile.Tile
 import hexrts.desktop.input.ScreenGestureListener
 import hexrts.desktop.input.ScreenInputProcessor
 import ktx.app.KtxScreen
@@ -113,6 +114,13 @@ class RenderScreen(
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             camera.translate(0f, -MOVE_SPEED * delta)
+        }
+
+        val localX = (camera.position.x / Chunk.CHUNK_SIZE / Tile.WIDTH).toInt()
+        val localY = (camera.position.y / Chunk.CHUNK_SIZE / Tile.HEIGHT).toInt()
+
+        if (world.getChunk(localX, localY) == null) {
+            world.addChunk(localX, localY)
         }
     }
 
