@@ -33,6 +33,7 @@ class RenderScreen(
     }
 
     private lateinit var tilemap: Texture
+    private lateinit var objectTilemap: Texture
 
     private val polygonBatch = PolygonSpriteBatch()
 
@@ -43,6 +44,7 @@ class RenderScreen(
         Gdx.input.inputProcessor = inputMultiplexer
 
         tilemap = Texture(Gdx.files.internal("tiles_sheet.png"))
+        objectTilemap = Texture(Gdx.files.internal("objects_sheet.png"))
     }
 
     override fun render(delta: Float) {
@@ -61,20 +63,8 @@ class RenderScreen(
         polygonBatch.begin()
         val chunk = Chunk.getPredefinedChunk()
 
-        chunk.tiles.forEachIndexed { y, xTiles ->
-            xTiles.forEachIndexed { x, tile ->
-                val renderOffsetX = if (y % 2 == 0) 0f else Tile.SIZE * sqrt(3f) / 2
+        chunk.render(polygonBatch, tilemap, objectTilemap)
 
-                val textureRegion = tile.getTextureRegion(tilemap)
-
-                polygonBatch.draw(textureRegion,
-                    x * Tile.SIZE * sqrt(3f) + renderOffsetX,
-                    y * (Tile.SIZE * 1.5f - 1f),
-                    Tile.SIZE * sqrt(3f),
-                    Tile.SIZE * 2
-                )
-            }
-        }
         polygonBatch.end()
     }
 

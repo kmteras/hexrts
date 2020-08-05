@@ -1,5 +1,13 @@
 package hexrts.core.world
 
-class TerrainTile(type: TileType) : Tile(type) {
+import hexrts.core.world.definition.TileType
 
+class TerrainTile(
+    type: TileType,
+    val building: BaseBuilding? = null
+) : Tile(type) {
+
+    override fun update(delta: Float) {
+
+    }
 }

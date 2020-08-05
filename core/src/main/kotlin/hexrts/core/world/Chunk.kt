@@ -1,8 +1,13 @@
 package hexrts.core.world
 
-import hexrts.core.world.TileType.*
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Batch
+import hexrts.core.world.definition.TileType.*
+import hexrts.core.world.definition.BuildingType.Base
+import kotlin.math.sqrt
 
-class Chunk(val tiles: Array<Array<BaseTile>>) {
+// TODO: Add coordinates for chunks
+class Chunk(private val tiles: Array<Array<BaseTile>>) {
     companion object {
         const val CHUNK_SIZE = 8
 
@@ -35,7 +40,7 @@ class Chunk(val tiles: Array<Array<BaseTile>>) {
                     ),
                     arrayOf<BaseTile>(
                         TerrainTile(Grass), TerrainTile(Grass), TerrainTile(Grass), TerrainTile(Forest),
-                        TerrainTile(Dirt), TerrainTile(Forest), TerrainTile(Grass), TerrainTile(Grass)
+                        TerrainTile(Dirt, Building(Base)), TerrainTile(Forest), TerrainTile(Grass), TerrainTile(Grass)
                     ),
                     arrayOf<BaseTile>(
                         TerrainTile(Grass), TerrainTile(Grass), TerrainTile(Grass), TerrainTile(Grass),
@@ -49,4 +54,34 @@ class Chunk(val tiles: Array<Array<BaseTile>>) {
     constructor() : this(Array<Array<BaseTile>>(CHUNK_SIZE) {
         Array(CHUNK_SIZE) { TerrainTile(Grass) }
     })
+
+    fun render(batch: Batch, tilemap: Texture, objectTilemap: Texture) {
+        tiles.forEachIndexed { y, xTiles ->
+            xTiles.forEachIndexed { x, tile ->
+                val renderOffsetX = if (y % 2 == 0) 0f else Tile.SIZE * sqrt(3f) / 2
+
+                val textureRegion = tile.type.getTextureRegion(tilemap)
+
+                batch.draw(
+                    textureRegion,
+                    x * Tile.SIZE * sqrt(3f) + renderOffsetX,
+                    y * (Tile.SIZE * 1.5f - 1f),
+                    Tile.SIZE * sqrt(3f),
+                    Tile.SIZE * 2
+                )
+
+                if (tile is TerrainTile && tile.building != null) {
+                    val objectRegion = tile.building.type.getTextureRegion(objectTilemap)
+
+                    batch.draw(
+                        objectRegion,
+                        x * Tile.SIZE * sqrt(3f) + renderOffsetX + Tile.SIZE / 2,
+                        y * (Tile.SIZE * 1.5f - 1f) + Tile.SIZE / 2,
+                        Tile.SIZE * sqrt(3f) / 2,
+                        Tile.SIZE
+                    )
+                }
+            }
+        }
+    }
 }

@@ -1,12 +1,8 @@
 package hexrts.core.world
 
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+import hexrts.core.gameobject.Updatable
+import hexrts.core.world.definition.TileType
 
-interface BaseTile {
+interface BaseTile : Updatable {
     val type: TileType
-
-    fun getTextureRegion(texture: Texture): TextureRegion {
-        return TextureRegion(texture, type.x, type.y, type.width, type.height)
-    }
 }
