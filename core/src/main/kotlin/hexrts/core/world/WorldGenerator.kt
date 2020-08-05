@@ -15,6 +15,9 @@ class WorldGenerator {
         ) + 1 / 2f
 
         return when {
+            noise < 0.30 -> {
+                TerrainTile(TileType.Stone)
+            }
             noise < 0.37 -> {
                 TerrainTile(TileType.Sand)
             }

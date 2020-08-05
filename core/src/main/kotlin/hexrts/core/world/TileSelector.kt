@@ -18,6 +18,14 @@ class TileSelector(private val world: World) {
         val location = findTileLocation(x, y)
         val tile = getChunkTile(location.first, location.second)
 
+        val chunkX = floor(location.first.toDouble() / Chunk.CHUNK_SIZE).toInt()
+        val chunkY = floor(location.second.toDouble() / Chunk.CHUNK_SIZE).toInt()
+
+        val chunkTileX = if (location.first >= 0) location.first % Chunk.CHUNK_SIZE else Chunk.CHUNK_SIZE + location.first % Chunk.CHUNK_SIZE
+        val chunkTileY = if (location.second >= 0) location.second % Chunk.CHUNK_SIZE else Chunk.CHUNK_SIZE + location.second % Chunk.CHUNK_SIZE
+
+        println("$location $chunkX, $chunkY $chunkTileX, $chunkTileY")
+
         selectedTile = if (selectedTile == tile) {
             null
         } else {
@@ -29,8 +37,8 @@ class TileSelector(private val world: World) {
         val chunkX = floor(x.toDouble() / Chunk.CHUNK_SIZE).toInt()
         val chunkY = floor(y.toDouble() / Chunk.CHUNK_SIZE).toInt()
 
-        val chunkTileX = if (x >= 0) x % Chunk.CHUNK_SIZE else Chunk.CHUNK_SIZE + x % Chunk.CHUNK_SIZE
-        val chunkTileY = if (y >= 0) y % Chunk.CHUNK_SIZE else Chunk.CHUNK_SIZE + y % Chunk.CHUNK_SIZE
+        val chunkTileX = if (x >= 0) x % Chunk.CHUNK_SIZE else if (x % Chunk.CHUNK_SIZE == 0) 0 else Chunk.CHUNK_SIZE + x % Chunk.CHUNK_SIZE
+        val chunkTileY = if (y >= 0) y % Chunk.CHUNK_SIZE else if (y % Chunk.CHUNK_SIZE == 0) 0 else Chunk.CHUNK_SIZE + y % Chunk.CHUNK_SIZE
 
         if (chunkTileX in 0..7 && chunkTileY in 0..7) {
             val chunk = world.getChunk(chunkX, chunkY)
