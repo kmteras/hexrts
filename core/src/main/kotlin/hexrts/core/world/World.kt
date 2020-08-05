@@ -28,7 +28,7 @@ class World {
         return chunks[x]?.get(y)
     }
 
-    fun addChunk(x: Int, y: Int) {
+    private fun addChunk(x: Int, y: Int) {
         var yMap = chunks[x]
 
         if (yMap == null) {
@@ -56,5 +56,13 @@ class World {
         }
 
         yMap[y] = Chunk.getPredefinedChunk(x, y)
+    }
+
+    fun addChunkIfNotExists(x: Int, y: Int) {
+        val chunk = getChunk(x, y)
+
+        if (chunk == null) {
+            addChunk(x, y)
+        }
     }
 }

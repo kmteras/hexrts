@@ -119,9 +119,11 @@ class RenderScreen(
         val localX = (camera.position.x / Chunk.CHUNK_SIZE / Tile.WIDTH).toInt()
         val localY = (camera.position.y / Chunk.CHUNK_SIZE / Tile.HEIGHT).toInt()
 
-        if (world.getChunk(localX, localY) == null) {
-            world.addChunk(localX, localY)
-        }
+        world.addChunkIfNotExists(localX, localY)
+        world.addChunkIfNotExists(localX + 1, localY)
+        world.addChunkIfNotExists(localX, localY + 1)
+        world.addChunkIfNotExists(localX - 1, localY)
+        world.addChunkIfNotExists(localX, localY - 1)
     }
 
     override fun resize(width: Int, height: Int) {
