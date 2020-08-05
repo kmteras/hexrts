@@ -2,6 +2,7 @@ package hexrts.core.world
 
 import hexrts.core.world.tile.TerrainTile
 import hexrts.core.world.tile.Tile
+import kotlin.math.floor
 import kotlin.math.sqrt
 
 class TileSelector(private val world: World) {
@@ -9,31 +10,37 @@ class TileSelector(private val world: World) {
     var hoveredTile: TerrainTile? = null
 
     fun hoverTile(x: Int, y: Int) {
-        val tile = findTileLocation(x, y)
-
-        hoveredTile = if (tile.first in 0..7 && tile.second in 0..7) {
-            world.getChunk(0, 0).getTile(tile.first, tile.second) as TerrainTile
-        } else {
-            null
-        }
+        val location = findTileLocation(x, y)
+        hoveredTile = getChunkTile(location.first, location.second)
     }
 
     fun selectTile(x: Int, y: Int) {
-        println("Selecting tile at $x $y")
+        val location = findTileLocation(x, y)
+        val tile = getChunkTile(location.first, location.second)
 
-        val tile = findTileLocation(x, y)
-
-        selectedTile = if (tile.first in 0..7 && tile.second in 0..7) {
-            val newSelected = world.getChunk(0, 0).getTile(tile.first, tile.second) as TerrainTile
-
-            if (selectedTile == newSelected) {
-                null
-            } else {
-                newSelected
-            }
-        } else {
+        selectedTile = if (selectedTile == tile) {
             null
+        } else {
+            tile
         }
+    }
+
+    private fun getChunkTile(x: Int, y: Int): TerrainTile? {
+        val chunkX = floor(x.toDouble() / Chunk.CHUNK_SIZE).toInt()
+        val chunkY = floor(y.toDouble() / Chunk.CHUNK_SIZE).toInt()
+
+        val chunkTileX = if (x >= 0) x % Chunk.CHUNK_SIZE else Chunk.CHUNK_SIZE + x % Chunk.CHUNK_SIZE
+        val chunkTileY = if (y >= 0) y % Chunk.CHUNK_SIZE else Chunk.CHUNK_SIZE + y % Chunk.CHUNK_SIZE
+
+        if (chunkTileX in 0..7 && chunkTileY in 0..7) {
+            val chunk = world.getChunk(chunkX, chunkY)
+
+            if (chunk != null) {
+                return chunk.getTile(chunkTileX, chunkTileY) as TerrainTile
+            }
+        }
+
+        return null
     }
 
     private fun findTileLocation(x: Int, y: Int): Pair<Int, Int> {

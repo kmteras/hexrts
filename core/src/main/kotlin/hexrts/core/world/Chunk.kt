@@ -71,7 +71,7 @@ class Chunk(
                               width: Float, height: Float
     ) {
         val chunkOffsetX = this.x * CHUNK_SIZE * Tile.SIZE * sqrt(3f);
-        val chunkOffsetY = this.y * CHUNK_SIZE * Tile.SIZE * sqrt(3f);
+        val chunkOffsetY = this.y * CHUNK_SIZE * (Tile.SIZE * 1.5f - 1f);
 
         batch.draw(
             textureRegion,
