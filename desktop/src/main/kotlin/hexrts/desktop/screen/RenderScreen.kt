@@ -50,11 +50,11 @@ class RenderScreen(
     private lateinit var tilemap: Texture
     private lateinit var objectTilemap: Texture
     private lateinit var tileSelector: TileSelector
-    private val skin = Skin(Gdx.files.internal("data/uiskin.json"))
     private val worldGenerator = WorldGenerator()
     private val world = worldGenerator.generateWorld()
 
     private val polygonBatch = PolygonSpriteBatch()
+    private val gameUI = GameUI(guiViewport)
 
     override fun show() {
         tileSelector = TileSelector(world)
@@ -73,17 +73,7 @@ class RenderScreen(
 
         renderChunk()
 
-        val stage = Stage(guiViewport)
-        val label = Label("${(1 / delta).roundToInt()}fps", skin)
-        label.setPosition(5f, guiViewport.topGutterY - 25f)
-        stage.addActor(label)
-
-        val selectedTileText = TextArea("Selected tile: ${tileSelector.selectedTile}", skin)
-        selectedTileText.style.background.topHeight = 10f
-        selectedTileText.width = guiViewport.worldWidth
-
-        stage.addActor(selectedTileText)
-        stage.draw()
+        gameUI.render(delta)
     }
 
     private fun renderChunk() {
@@ -99,6 +89,9 @@ class RenderScreen(
         font.dispose()
         batch.dispose()
         polygonBatch.dispose()
+        tilemap.dispose()
+        objectTilemap.dispose()
+        gameUI.dispose()
     }
 
     private fun update(delta: Float) {
@@ -126,10 +119,12 @@ class RenderScreen(
         world.addChunkIfNotExists(localX - 1, localY, worldGenerator.generateChunk(localX - 1, localY))
         world.addChunkIfNotExists(localX, localY + 1, worldGenerator.generateChunk(localX, localY + 1))
         world.addChunkIfNotExists(localX, localY - 1, worldGenerator.generateChunk(localX, localY - 1))
+
+        gameUI.updateText(delta, tileSelector.selectedTile.toString())
     }
 
     override fun resize(width: Int, height: Int) {
-        guiViewport.update(width, height)
+        guiViewport.update(width, height, true)
 
         this.width = width.toFloat()
         this.height = height.toFloat()
