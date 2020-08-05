@@ -11,6 +11,7 @@ enum class TileType(val x: Int, val y: Int, val width: Int, val height: Int) {
     Stone(0, 1704, 120, 140),
     Lumber(610, 852, 120, 140),
     StoreBorder(122, 568, 120, 140),
+    Water(1342, 710, 120, 140),
     SandBorder(244, 1278, 120, 140);
 
     fun getTextureRegion(texture: Texture): TextureRegion {

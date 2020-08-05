@@ -1,5 +1,6 @@
 package hexrts.core.world
 
+import com.badlogic.gdx.math.MathUtils.lerp
 import hexrts.core.util.PerlinNoiseGenerator
 import hexrts.core.world.definition.TileType
 import hexrts.core.world.tile.BaseTile
@@ -7,12 +8,22 @@ import hexrts.core.world.tile.TerrainTile
 
 class WorldGenerator {
     private val noiseGenerator = PerlinNoiseGenerator(0, 256 + 1)
+    private val biomeNoiseGenerator = PerlinNoiseGenerator(0, 512 + 1)
 
     private fun getTile(x: Int, y: Int, chunkX: Int, chunkY: Int): BaseTile {
+        val biomeNoise = biomeNoiseGenerator.perlin(
+            x.toFloat() / Chunk.CHUNK_SIZE + chunkX + Chunk.CHUNK_SIZE * 16,
+            y.toFloat() / Chunk.CHUNK_SIZE + chunkY + Chunk.CHUNK_SIZE * 16
+        ) + 1 / 2f
+
         val noise = noiseGenerator.perlin(
             x.toFloat() / Chunk.CHUNK_SIZE + chunkX + Chunk.CHUNK_SIZE * 16,
             y.toFloat() / Chunk.CHUNK_SIZE + chunkY + Chunk.CHUNK_SIZE * 16
         ) + 1 / 2f
+
+        if (biomeNoise < 0.45 && noise > 0.44 && noise < 0.60) {
+            return TerrainTile(TileType.Water)
+        }
 
         return when {
             noise < 0.30 -> {
@@ -52,8 +63,8 @@ class WorldGenerator {
     fun generateWorld(): World {
         val world = World()
 
-        for (x in -2..2) {
-            for (y in -2..2) {
+        for (x in -10..10) {
+            for (y in -10..10) {
                 world.addChunkIfNotExists(x, y, generateChunk(x, y))
             }
         }
