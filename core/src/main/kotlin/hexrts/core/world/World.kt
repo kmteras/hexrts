@@ -28,6 +28,21 @@ class World {
         return chunks[x]?.get(y)
     }
 
+    private fun addChunk(x: Int, y: Int, chunk: Chunk) {
+        var yMap = chunks[x]
+
+        if (yMap == null) {
+            yMap = HashMap()
+            chunks[x] = yMap
+        }
+
+        if (yMap[y] != null) {
+            throw RuntimeException("Chunk already exists at ($x, $y)")
+        }
+
+        yMap[y] = chunk
+    }
+
     private fun addChunk(x: Int, y: Int) {
         var yMap = chunks[x]
 
@@ -63,6 +78,14 @@ class World {
 
         if (chunk == null) {
             addChunk(x, y)
+        }
+    }
+
+    fun addChunkIfNotExists(x: Int, y: Int, chunk: Chunk) {
+        val existingChunk = getChunk(x, y)
+
+        if (existingChunk == null) {
+            addChunk(x, y, chunk)
         }
     }
 }

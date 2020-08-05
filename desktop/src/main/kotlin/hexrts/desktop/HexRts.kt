@@ -3,7 +3,7 @@ package hexrts.desktop
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
-import hexrts.core.util.Core
+import hexrts.desktop.screen.NoiseScreen
 import hexrts.desktop.screen.RenderScreen
 import ktx.app.KtxGame
 
@@ -25,8 +25,8 @@ class HexRts : KtxGame<Screen>() {
     }
 
     override fun create() {
-        println("Initialized ${Core.CORE}")
         addScreen(RenderScreen(DEFAULT_WIDTH.toFloat(), DEFAULT_HEIGHT.toFloat()))
+        addScreen(NoiseScreen(DEFAULT_WIDTH.toFloat(), DEFAULT_HEIGHT.toFloat()))
         setScreen<RenderScreen>()
     }
 }

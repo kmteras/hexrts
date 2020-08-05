@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport
 import hexrts.core.world.Chunk
 import hexrts.core.world.TileSelector
 import hexrts.core.world.World
+import hexrts.core.world.WorldGenerator
 import hexrts.core.world.tile.Tile
 import hexrts.desktop.input.ScreenGestureListener
 import hexrts.desktop.input.ScreenInputProcessor
@@ -50,7 +51,8 @@ class RenderScreen(
     private lateinit var objectTilemap: Texture
     private lateinit var tileSelector: TileSelector
     private val skin = Skin(Gdx.files.internal("data/uiskin.json"))
-    private val world = World()
+    private val worldGenerator = WorldGenerator()
+    private val world = worldGenerator.generateWorld()
 
     private val polygonBatch = PolygonSpriteBatch()
 
@@ -117,13 +119,13 @@ class RenderScreen(
         }
 
         val localX = (camera.position.x / Chunk.CHUNK_SIZE / Tile.WIDTH).toInt()
-        val localY = (camera.position.y / Chunk.CHUNK_SIZE / Tile.HEIGHT).toInt()
+        val localY = (camera.position.y / Chunk.CHUNK_SIZE / Tile.AVERAGE_HEIGHT).toInt()
 
-        world.addChunkIfNotExists(localX, localY)
-        world.addChunkIfNotExists(localX + 1, localY)
-        world.addChunkIfNotExists(localX, localY + 1)
-        world.addChunkIfNotExists(localX - 1, localY)
-        world.addChunkIfNotExists(localX, localY - 1)
+        world.addChunkIfNotExists(localX, localY, worldGenerator.generateChunk(localX, localY))
+        world.addChunkIfNotExists(localX + 1, localY, worldGenerator.generateChunk(localX + 1, localY))
+        world.addChunkIfNotExists(localX - 1, localY, worldGenerator.generateChunk(localX - 1, localY))
+        world.addChunkIfNotExists(localX, localY + 1, worldGenerator.generateChunk(localX, localY + 1))
+        world.addChunkIfNotExists(localX, localY - 1, worldGenerator.generateChunk(localX, localY - 1))
     }
 
     override fun resize(width: Int, height: Int) {
