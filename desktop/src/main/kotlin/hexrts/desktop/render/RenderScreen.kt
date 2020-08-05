@@ -11,16 +11,16 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.input.GestureDetector
 import hexrts.core.world.Chunk
+import hexrts.core.world.Tile
 import hexrts.desktop.input.ScreenGestureListener
 import hexrts.desktop.input.ScreenInputProcessor
-import hexrts.desktop.tile.TileGenerator
 import ktx.app.KtxScreen
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 class RenderScreen(
-    var width: Float,
-    var height: Float
+    private var width: Float,
+    private var height: Float
 ) : KtxScreen {
     companion object {
         const val MOVE_SPEED = 400f
@@ -63,15 +63,15 @@ class RenderScreen(
 
         chunk.tiles.forEachIndexed { y, xTiles ->
             xTiles.forEachIndexed { x, tile ->
-                val renderOffsetX = if (y % 2 == 0) 0f else TileGenerator.size * sqrt(3f) / 2
+                val renderOffsetX = if (y % 2 == 0) 0f else Tile.SIZE * sqrt(3f) / 2
 
                 val textureRegion = tile.getTextureRegion(tilemap)
 
                 polygonBatch.draw(textureRegion,
-                    x * TileGenerator.size * sqrt(3f) + renderOffsetX,
-                    y * (TileGenerator.size * 1.5f - 1f),
-                    TileGenerator.size * sqrt(3f),
-                    TileGenerator.size * 2
+                    x * Tile.SIZE * sqrt(3f) + renderOffsetX,
+                    y * (Tile.SIZE * 1.5f - 1f),
+                    Tile.SIZE * sqrt(3f),
+                    Tile.SIZE * 2
                 )
             }
         }
