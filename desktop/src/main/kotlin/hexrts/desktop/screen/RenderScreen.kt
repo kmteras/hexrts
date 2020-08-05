@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import hexrts.core.world.Chunk
 import hexrts.core.world.TileSelector
+import hexrts.core.world.World
 import hexrts.desktop.input.ScreenGestureListener
 import hexrts.desktop.input.ScreenInputProcessor
 import ktx.app.KtxScreen
@@ -46,14 +47,14 @@ class RenderScreen(
 
     private lateinit var tilemap: Texture
     private lateinit var objectTilemap: Texture
-    private val chunk = Chunk.getPredefinedChunk()
     private lateinit var tileSelector: TileSelector
     private val skin = Skin(Gdx.files.internal("data/uiskin.json"))
+    private val world = World()
 
     private val polygonBatch = PolygonSpriteBatch()
 
     override fun show() {
-        tileSelector = TileSelector(chunk)
+        tileSelector = TileSelector(world)
         val inputMultiplexer = InputMultiplexer()
         inputMultiplexer.addProcessor(GestureDetector(ScreenGestureListener(camera, tileSelector)))
         inputMultiplexer.addProcessor(ScreenInputProcessor(camera, tileSelector))
@@ -86,7 +87,7 @@ class RenderScreen(
         polygonBatch.projectionMatrix = camera.combined
         polygonBatch.begin()
 
-        chunk.render(polygonBatch, tilemap, objectTilemap, tileSelector)
+        world.render(polygonBatch, tilemap, objectTilemap, tileSelector)
 
         polygonBatch.end()
     }

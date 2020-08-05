@@ -4,7 +4,7 @@ import hexrts.core.world.tile.TerrainTile
 import hexrts.core.world.tile.Tile
 import kotlin.math.sqrt
 
-class TileSelector(private val chunk: Chunk) {
+class TileSelector(private val world: World) {
     var selectedTile: TerrainTile? = null
     var hoveredTile: TerrainTile? = null
 
@@ -12,7 +12,7 @@ class TileSelector(private val chunk: Chunk) {
         val tile = findTileLocation(x, y)
 
         hoveredTile = if (tile.first in 0..7 && tile.second in 0..7) {
-            chunk.getTile(tile.first, tile.second) as TerrainTile
+            world.getChunk(0, 0).getTile(tile.first, tile.second) as TerrainTile
         } else {
             null
         }
@@ -24,7 +24,7 @@ class TileSelector(private val chunk: Chunk) {
         val tile = findTileLocation(x, y)
 
         selectedTile = if (tile.first in 0..7 && tile.second in 0..7) {
-            val newSelected = chunk.getTile(tile.first, tile.second) as TerrainTile
+            val newSelected = world.getChunk(0, 0).getTile(tile.first, tile.second) as TerrainTile
 
             if (selectedTile == newSelected) {
                 null
