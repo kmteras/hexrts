@@ -5,14 +5,17 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.input.GestureDetector
+import hexrts.core.world.Chunk
 import hexrts.desktop.input.ScreenGestureListener
 import hexrts.desktop.input.ScreenInputProcessor
 import hexrts.desktop.tile.TileGenerator
 import ktx.app.KtxScreen
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 class RenderScreen(
@@ -29,6 +32,8 @@ class RenderScreen(
         color = Color.WHITE
     }
 
+    private lateinit var tilemap: Texture
+
     private val polygonBatch = PolygonSpriteBatch()
 
     override fun show() {
@@ -36,40 +41,47 @@ class RenderScreen(
         inputMultiplexer.addProcessor(GestureDetector(ScreenGestureListener(camera)))
         inputMultiplexer.addProcessor(ScreenInputProcessor(camera))
         Gdx.input.inputProcessor = inputMultiplexer
+
+        tilemap = Texture(Gdx.files.internal("tiles_sheet.png"))
     }
 
     override fun render(delta: Float) {
         update(delta)
-
         camera.update()
+
+        renderChunk()
+
+        batch.begin()
+        font.draw(batch, "Hello World ${(1 / delta).roundToInt()}fps", 10f, 20f)
+        batch.end()
+    }
+
+    private fun renderChunk() {
         polygonBatch.projectionMatrix = camera.combined
         polygonBatch.begin()
-        for (x in 0..8) {
-            for (y in 0..8) {
-                val texture = if (y % 2 == 0) TileGenerator.blueTexture else TileGenerator.greenTexture
-                val hex = TileGenerator.getRenderTile(texture)
+        val chunk = Chunk.getPredefinedChunk()
 
+        chunk.tiles.forEachIndexed { y, xTiles ->
+            xTiles.forEachIndexed { x, tile ->
                 val renderOffsetX = if (y % 2 == 0) 0f else TileGenerator.size * sqrt(3f) / 2
 
-                hex.setPosition(
+                val textureRegion = tile.getTextureRegion(tilemap)
+
+                polygonBatch.draw(textureRegion,
                     x * TileGenerator.size * sqrt(3f) + renderOffsetX,
-                    y * TileGenerator.size * 1.5f
+                    y * (TileGenerator.size * 1.5f - 1f),
+                    TileGenerator.size * sqrt(3f),
+                    TileGenerator.size * 2
                 )
-                hex.draw(polygonBatch)
             }
         }
         polygonBatch.end()
-
-        batch.begin()
-
-        font.draw(batch, "Hello World", 100f, 100f)
-
-        batch.end()
     }
 
     override fun dispose() {
         font.dispose()
         batch.dispose()
+        polygonBatch.dispose()
     }
 
     private fun update(delta: Float) {
