@@ -1,4 +1,4 @@
-package hexrts.core.world
+package hexrts.core.world.tile
 
 import hexrts.core.gameobject.Updatable
 import hexrts.core.world.definition.TileType

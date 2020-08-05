@@ -2,10 +2,14 @@ package hexrts.desktop.input
 
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.math.Vector3
+import hexrts.core.world.TileSelector
 import java.lang.Float.max
 import java.lang.Float.min
 
-class ScreenInputProcessor(private val camera: OrthographicCamera
+class ScreenInputProcessor(
+    private val camera: OrthographicCamera,
+    private val selector: TileSelector
 ) : InputProcessor {
     companion object {
         const val MIN_SCROLL = 0.2f;
@@ -19,6 +23,8 @@ class ScreenInputProcessor(private val camera: OrthographicCamera
     }
 
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
+        val worldCoords = camera.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
+        selector.hoverTile(worldCoords.x.toInt(), worldCoords.y.toInt())
         return false
     }
 

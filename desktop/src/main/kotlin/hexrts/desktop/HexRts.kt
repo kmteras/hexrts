@@ -1,11 +1,10 @@
 package hexrts.desktop
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import hexrts.core.util.Core
-import hexrts.desktop.render.RenderScreen
+import hexrts.desktop.screen.RenderScreen
 import ktx.app.KtxGame
 
 class HexRts : KtxGame<Screen>() {

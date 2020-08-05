@@ -1,4 +1,4 @@
-package hexrts.desktop.render
+package hexrts.desktop.screen
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
@@ -11,12 +11,11 @@ import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.input.GestureDetector
 import hexrts.core.world.Chunk
-import hexrts.core.world.Tile
+import hexrts.core.world.TileSelector
 import hexrts.desktop.input.ScreenGestureListener
 import hexrts.desktop.input.ScreenInputProcessor
 import ktx.app.KtxScreen
 import kotlin.math.roundToInt
-import kotlin.math.sqrt
 
 class RenderScreen(
     private var width: Float,
@@ -34,13 +33,16 @@ class RenderScreen(
 
     private lateinit var tilemap: Texture
     private lateinit var objectTilemap: Texture
+    private val chunk = Chunk.getPredefinedChunk()
+    private lateinit var tileSelector: TileSelector
 
     private val polygonBatch = PolygonSpriteBatch()
 
     override fun show() {
+        tileSelector = TileSelector(chunk)
         val inputMultiplexer = InputMultiplexer()
-        inputMultiplexer.addProcessor(GestureDetector(ScreenGestureListener(camera)))
-        inputMultiplexer.addProcessor(ScreenInputProcessor(camera))
+        inputMultiplexer.addProcessor(GestureDetector(ScreenGestureListener(camera, tileSelector)))
+        inputMultiplexer.addProcessor(ScreenInputProcessor(camera, tileSelector))
         Gdx.input.inputProcessor = inputMultiplexer
 
         tilemap = Texture(Gdx.files.internal("tiles_sheet.png"))
@@ -61,9 +63,8 @@ class RenderScreen(
     private fun renderChunk() {
         polygonBatch.projectionMatrix = camera.combined
         polygonBatch.begin()
-        val chunk = Chunk.getPredefinedChunk()
 
-        chunk.render(polygonBatch, tilemap, objectTilemap)
+        chunk.render(polygonBatch, tilemap, objectTilemap, tileSelector)
 
         polygonBatch.end()
     }

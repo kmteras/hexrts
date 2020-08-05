@@ -3,9 +3,12 @@ package hexrts.desktop.input
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.Vector3
+import hexrts.core.world.TileSelector
 
 class ScreenGestureListener(
-    private val camera: OrthographicCamera
+    private val camera: OrthographicCamera,
+    private val selector: TileSelector
 ) : GestureDetector.GestureListener {
     override fun fling(velocityX: Float, velocityY: Float, button: Int): Boolean {
         return false
@@ -24,6 +27,8 @@ class ScreenGestureListener(
     }
 
     override fun tap(x: Float, y: Float, count: Int, button: Int): Boolean {
+        val worldCoords = camera.unproject(Vector3(x, y, 0f))
+        selector.selectTile(worldCoords.x.toInt(), worldCoords.y.toInt())
         return false
     }
 

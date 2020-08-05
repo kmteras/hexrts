@@ -1,5 +1,6 @@
-package hexrts.core.world
+package hexrts.core.world.tile
 
+import hexrts.core.world.building.BaseBuilding
 import hexrts.core.world.definition.TileType
 
 class TerrainTile(
