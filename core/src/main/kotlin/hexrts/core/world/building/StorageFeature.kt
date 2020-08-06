@@ -6,6 +6,10 @@ import hexrts.core.world.definition.ResourceType
 class StorageFeature(private val capacity: Long) : BuildingFeature {
     private val storage = HashMap<ResourceType, Long>()
 
+    fun getStorage(): Map<ResourceType, Long> {
+        return storage
+    }
+
     fun addStorage(resourceType: ResourceType, amount: Long) {
         val currentAmount = storage.getOrElse(resourceType, { 0 })
         if (currentAmount + amount > capacity) {
