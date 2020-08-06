@@ -47,7 +47,7 @@ class TileSelector(
         val localTilePosition = tilePosition.getLocalPosition()
 
         if (localTilePosition.x in 0..7 && localTilePosition.y in 0..7) {
-            return chunk.getTile(localTilePosition.x, localTilePosition.y) as TerrainTile
+            return chunk.getTile(localTilePosition) as TerrainTile
         }
 
         return null
@@ -65,7 +65,7 @@ class TileSelector(
     /**
      * Returns the global location of the tile the click was performed in.
      */
-    private fun getGlobalTileLocation(x: Int, y: Int): TilePosition {
+    private fun getGlobalTileLocation(x: Int, y: Int): TilePosition.Global {
         val row = floor(y / (Tile.SIZE * 1.5)).toInt()
         val col: Int
 
@@ -75,6 +75,6 @@ class TileSelector(
             floor((x - Tile.WIDTH / 2) / Tile.WIDTH).toInt()
         }
 
-        return TilePosition(col, row, TilePosition.TilePositionType.GLOBAL)
+        return TilePosition.Global(col, row)
     }
 }

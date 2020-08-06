@@ -57,7 +57,7 @@ class WorldGenerator {
             }
         }
 
-        return Chunk(tiles, chunkX, chunkY)
+        return Chunk(tiles, ChunkPosition(chunkX, chunkY))
     }
 
     fun generateWorld(): World {

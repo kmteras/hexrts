@@ -15,7 +15,7 @@ class GuiBuildingService(
         val chunk = world.getChunk(chunkPosition) ?: return
         val selectedTile = gameUi.getSelectedTile() ?: return
 
-        chunk.setTile(tilePosition, TerrainTile(selectedTile))
+        chunk.setTile(tilePosition.getLocalPosition(), TerrainTile(selectedTile))
     }
 
     override fun deselect() {

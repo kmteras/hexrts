@@ -8,11 +8,7 @@ class World {
     private val chunks = HashMap<Int, HashMap<Int, Chunk>>()
 
     init {
-        addChunk(-1, 0)
         addPredefinedChunk(0, 0)
-        addChunk(1, 0)
-        addChunk(0, 1)
-        addChunk(0, -1)
     }
 
     fun render(batch: Batch, tilemap: Texture, objectTilemap: Texture, selector: TileSelector) {
@@ -25,7 +21,7 @@ class World {
         }
     }
 
-    fun getChunk(x: Int, y: Int): Chunk? {
+    private fun getChunk(x: Int, y: Int): Chunk? {
         return chunks[x]?.get(y)
     }
 
@@ -33,7 +29,7 @@ class World {
         return getChunk(chunkPosition.x, chunkPosition.y)
     }
 
-    private fun addChunk(x: Int, y: Int, chunk: Chunk) {
+    private fun addChunk(x: Int, y: Int, chunkGetter: (Int, Int) -> Chunk) {
         var yMap = chunks[x]
 
         if (yMap == null) {
@@ -45,48 +41,12 @@ class World {
             throw RuntimeException("Chunk already exists at ($x, $y)")
         }
 
-        yMap[y] = chunk
-    }
-
-    private fun addChunk(chunkPosition: ChunkPosition) {
-        addChunk(chunkPosition.x, chunkPosition.y)
-    }
-
-    private fun addChunk(x: Int, y: Int) {
-        var yMap = chunks[x]
-
-        if (yMap == null) {
-            yMap = HashMap()
-            chunks[x] = yMap
-        }
-
-        if (yMap[y] != null) {
-            throw RuntimeException("Chunk already exists at ($x, $y)")
-        }
-
-        yMap[y] = Chunk(x, y)
+        yMap[y] = chunkGetter(x, y)
     }
 
     private fun addPredefinedChunk(x: Int, y: Int) {
-        var yMap = chunks[x]
-
-        if (yMap == null) {
-            yMap = HashMap()
-            chunks[x] = yMap
-        }
-
-        if (yMap[y] != null) {
-            throw RuntimeException("Chunk already exists at ($x, $y)")
-        }
-
-        yMap[y] = Chunk.getPredefinedChunk(x, y)
-    }
-
-    fun addChunkIfNotExists(x: Int, y: Int) {
-        val chunk = getChunk(x, y)
-
-        if (chunk == null) {
-            addChunk(x, y)
+        addChunk(x, y) { xx: Int, yy: Int ->
+            Chunk.getPredefinedChunk(ChunkPosition(xx, yy))
         }
     }
 
@@ -94,7 +54,9 @@ class World {
         val existingChunk = getChunk(chunkPosition)
 
         if (existingChunk == null) {
-            addChunk(chunkPosition.x, chunkPosition.y, chunk)
+            addChunk(chunkPosition.x, chunkPosition.y) { _, _ ->
+                chunk
+            }
         }
     }
 }

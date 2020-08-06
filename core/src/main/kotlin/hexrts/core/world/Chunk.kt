@@ -3,32 +3,28 @@ package hexrts.core.world
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import hexrts.core.util.ChunkPosition
 import hexrts.core.util.TilePosition
 import hexrts.core.world.building.HomeBuilding
 import hexrts.core.world.definition.TileType.*
 import hexrts.core.world.tile.BaseTile
 import hexrts.core.world.tile.TerrainTile
 import hexrts.core.world.tile.Tile
-import kotlin.math.floor
-import kotlin.math.sqrt
 
-// TODO: Add coordinates for chunks
 class Chunk(
     private val tiles: Array<Array<BaseTile>>,
-    private val x: Int,
-    private val y: Int
+    private val position: ChunkPosition
 ) {
-    constructor(x: Int, y: Int) : this(Array<Array<BaseTile>>(CHUNK_SIZE) {
+    constructor(position: ChunkPosition) : this(Array<Array<BaseTile>>(CHUNK_SIZE) {
         Array(CHUNK_SIZE) { TerrainTile(Grass) }
-    }, x, y)
+    }, position)
 
-    fun setTile(tilePosition: TilePosition, tile: BaseTile) {
-        val localTilePosition = tilePosition.getLocalPosition()
-        tiles[localTilePosition.y][localTilePosition.x] = tile
+    fun setTile(tilePosition: TilePosition.Local, tile: BaseTile) {
+        tiles[tilePosition.y][tilePosition.x] = tile
     }
 
-    fun getTile(x: Int, y: Int): BaseTile {
-        return tiles[y][x]
+    fun getTile(tilePosition: TilePosition.Local): BaseTile {
+        return tiles[tilePosition.y][tilePosition.x]
     }
 
     fun render(batch: Batch, tilemap: Texture, objectTilemap: Texture, tileSelector: TileSelector) {
@@ -50,7 +46,8 @@ class Chunk(
                     val objectRegion = tile.building.type.getTextureRegion(objectTilemap)
                     val renderOffsetX = getRenderOffset(y)
 
-                    renderTexture(batch, objectRegion,
+                    renderTexture(
+                        batch, objectRegion,
                         x * Tile.WIDTH + renderOffsetX + Tile.SIZE / 2,
                         y * (Tile.SIZE * 1.5f - 1f) + Tile.SIZE / 2,
                         Tile.WIDTH / 2,
@@ -72,12 +69,13 @@ class Chunk(
         )
     }
 
-    private fun renderTexture(batch: Batch, textureRegion: TextureRegion,
-                              x: Float, y: Float,
-                              width: Float, height: Float
+    private fun renderTexture(
+        batch: Batch, textureRegion: TextureRegion,
+        x: Float, y: Float,
+        width: Float, height: Float
     ) {
-        val chunkOffsetX = this.x * CHUNK_SIZE * Tile.WIDTH;
-        val chunkOffsetY = this.y * CHUNK_SIZE * (Tile.SIZE * 1.5f - 1f);
+        val chunkOffsetX = position.x * CHUNK_SIZE * Tile.WIDTH;
+        val chunkOffsetY = position.y * CHUNK_SIZE * (Tile.SIZE * 1.5f - 1f);
 
         batch.draw(
             textureRegion,
@@ -95,7 +93,7 @@ class Chunk(
     companion object {
         const val CHUNK_SIZE = 8
 
-        fun getPredefinedChunk(x: Int, y: Int): Chunk {
+        fun getPredefinedChunk(position: ChunkPosition): Chunk {
             return Chunk(
                 arrayOf(
                     arrayOf<BaseTile>(
@@ -179,7 +177,7 @@ class Chunk(
                         TerrainTile(Grass)
                     )
                 ),
-                x, y
+                position
             )
         }
     }

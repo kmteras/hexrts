@@ -2,25 +2,26 @@ package hexrts.core.util
 
 import hexrts.core.util.WorldUtil.globalPositionToChunkLocal
 
-class TilePosition(
+sealed class TilePosition(
     override val x: Int,
-    override val y: Int,
-    private val positionType: TilePositionType
+    override val y: Int
 ) : Position {
-    enum class TilePositionType {
-        GLOBAL,
-        LOCAL
+    class Local(x: Int, y: Int) : TilePosition(x, y) {
+
     }
 
-    fun getLocalPosition(): TilePosition {
-        if (positionType == TilePositionType.LOCAL) {
+    class Global(x: Int, y: Int) : TilePosition(x, y) {
+
+    }
+
+    fun getLocalPosition(): Local {
+        if (this is Local) {
             return this
         }
 
-        return TilePosition(
+        return Local(
             globalPositionToChunkLocal(x),
-            globalPositionToChunkLocal(y),
-            TilePositionType.LOCAL
+            globalPositionToChunkLocal(y)
         )
     }
 }
