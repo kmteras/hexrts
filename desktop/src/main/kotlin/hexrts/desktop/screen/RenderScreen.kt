@@ -10,22 +10,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.input.GestureDetector
-import com.badlogic.gdx.math.Vector3
-import com.badlogic.gdx.scenes.scene2d.Stage
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.TextArea
-import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.ScreenViewport
+import hexrts.core.util.ChunkPosition
 import hexrts.core.world.Chunk
 import hexrts.core.world.TileSelector
-import hexrts.core.world.World
 import hexrts.core.world.WorldGenerator
 import hexrts.core.world.tile.Tile
 import hexrts.desktop.input.ScreenGestureListener
 import hexrts.desktop.input.ScreenInputProcessor
+import hexrts.desktop.service.GuiBuildingService
 import ktx.app.KtxScreen
-import kotlin.math.roundToInt
 
 class RenderScreen(
     private var width: Float,
@@ -55,10 +49,12 @@ class RenderScreen(
 
     private val polygonBatch = PolygonSpriteBatch()
     private val gameUI = GameUI(guiViewport)
+    private val buildingService = GuiBuildingService(world, gameUI)
 
     override fun show() {
-        tileSelector = TileSelector(world)
+        tileSelector = TileSelector(world, buildingService)
         val inputMultiplexer = InputMultiplexer()
+        inputMultiplexer.addProcessor(gameUI.stage)
         inputMultiplexer.addProcessor(GestureDetector(ScreenGestureListener(camera, tileSelector)))
         inputMultiplexer.addProcessor(ScreenInputProcessor(camera, tileSelector))
         Gdx.input.inputProcessor = inputMultiplexer
@@ -114,11 +110,11 @@ class RenderScreen(
         val localX = (camera.position.x / Chunk.CHUNK_SIZE / Tile.WIDTH).toInt()
         val localY = (camera.position.y / Chunk.CHUNK_SIZE / Tile.AVERAGE_HEIGHT).toInt()
 
-        world.addChunkIfNotExists(localX, localY, worldGenerator.generateChunk(localX, localY))
-        world.addChunkIfNotExists(localX + 1, localY, worldGenerator.generateChunk(localX + 1, localY))
-        world.addChunkIfNotExists(localX - 1, localY, worldGenerator.generateChunk(localX - 1, localY))
-        world.addChunkIfNotExists(localX, localY + 1, worldGenerator.generateChunk(localX, localY + 1))
-        world.addChunkIfNotExists(localX, localY - 1, worldGenerator.generateChunk(localX, localY - 1))
+        world.addChunkIfNotExists(ChunkPosition(localX, localY), worldGenerator.generateChunk(localX, localY))
+        world.addChunkIfNotExists(ChunkPosition(localX + 1, localY), worldGenerator.generateChunk(localX + 1, localY))
+        world.addChunkIfNotExists(ChunkPosition(localX - 1, localY), worldGenerator.generateChunk(localX - 1, localY))
+        world.addChunkIfNotExists(ChunkPosition(localX, localY + 1), worldGenerator.generateChunk(localX, localY + 1))
+        world.addChunkIfNotExists(ChunkPosition(localX, localY - 1), worldGenerator.generateChunk(localX, localY - 1))
 
         gameUI.updateText(delta, tileSelector.selectedTile.toString())
     }

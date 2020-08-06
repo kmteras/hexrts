@@ -1,21 +1,35 @@
 package hexrts.core.world
 
+import hexrts.core.util.ChunkPosition
+import hexrts.core.util.TilePosition
 import hexrts.core.world.tile.TerrainTile
 import hexrts.core.world.tile.Tile
 import kotlin.math.floor
 
-class TileSelector(private val world: World) {
+class TileSelector(
+    private val world: World,
+    private val buildingService: BuildingService
+) {
     var selectedTile: TerrainTile? = null
     var hoveredTile: TerrainTile? = null
 
     fun hoverTile(x: Int, y: Int) {
-        val location = findTileLocation(x, y)
-        hoveredTile = getChunkTile(location.first, location.second)
+        val tilePosition = getGlobalTileLocation(x, y)
+        val chunkPosition = getChunkLocation(tilePosition)
+        val chunk = world.getChunk(chunkPosition)
+
+        hoveredTile = getChunkTile(tilePosition, chunk)
     }
 
     fun selectTile(x: Int, y: Int) {
-        val location = findTileLocation(x, y)
-        val tile = getChunkTile(location.first, location.second)
+        val tilePosition = getGlobalTileLocation(x, y)
+        val chunkPosition = getChunkLocation(tilePosition)
+        val chunk = world.getChunk(chunkPosition)
+        val tile = getChunkTile(tilePosition, chunk)
+
+        if (chunk != null) {
+            buildingService.build(tilePosition, chunkPosition)
+        }
 
         selectedTile = if (selectedTile == tile) {
             null
@@ -24,25 +38,34 @@ class TileSelector(private val world: World) {
         }
     }
 
-    private fun getChunkTile(x: Int, y: Int): TerrainTile? {
-        val chunkX = floor(x.toDouble() / Chunk.CHUNK_SIZE).toInt()
-        val chunkY = floor(y.toDouble() / Chunk.CHUNK_SIZE).toInt()
+    private fun getChunkTile(tilePosition: TilePosition, chunk: Chunk?): TerrainTile? {
+        if (chunk == null) {
+            return null
+        }
 
-        val chunkTileX = if (x >= 0) x % Chunk.CHUNK_SIZE else if (x % Chunk.CHUNK_SIZE == 0) 0 else Chunk.CHUNK_SIZE + x % Chunk.CHUNK_SIZE
-        val chunkTileY = if (y >= 0) y % Chunk.CHUNK_SIZE else if (y % Chunk.CHUNK_SIZE == 0) 0 else Chunk.CHUNK_SIZE + y % Chunk.CHUNK_SIZE
+        // Location of the tile inside of the chunk
+        val localTilePosition = tilePosition.getLocalPosition()
 
-        if (chunkTileX in 0..7 && chunkTileY in 0..7) {
-            val chunk = world.getChunk(chunkX, chunkY)
-
-            if (chunk != null) {
-                return chunk.getTile(chunkTileX, chunkTileY) as TerrainTile
-            }
+        if (localTilePosition.x in 0..7 && localTilePosition.y in 0..7) {
+            return chunk.getTile(localTilePosition.x, localTilePosition.y) as TerrainTile
         }
 
         return null
     }
 
-    private fun findTileLocation(x: Int, y: Int): Pair<Int, Int> {
+    /**
+     * Returns the location of the chunk the click was performed in.
+     */
+    private fun getChunkLocation(globalTilePosition: TilePosition): ChunkPosition {
+        val chunkX = floor(globalTilePosition.x.toDouble() / Chunk.CHUNK_SIZE).toInt()
+        val chunkY = floor(globalTilePosition.y.toDouble() / Chunk.CHUNK_SIZE).toInt()
+        return ChunkPosition(chunkX, chunkY)
+    }
+
+    /**
+     * Returns the global location of the tile the click was performed in.
+     */
+    private fun getGlobalTileLocation(x: Int, y: Int): TilePosition {
         val row = floor(y / (Tile.SIZE * 1.5)).toInt()
         val col: Int
 
@@ -52,6 +75,6 @@ class TileSelector(private val world: World) {
             floor((x - Tile.WIDTH / 2) / Tile.WIDTH).toInt()
         }
 
-        return Pair(col, row)
+        return TilePosition(col, row, TilePosition.TilePositionType.GLOBAL)
     }
 }

@@ -1,6 +1,6 @@
 package hexrts.core.world
 
-import com.badlogic.gdx.math.MathUtils.lerp
+import hexrts.core.util.ChunkPosition
 import hexrts.core.util.PerlinNoiseGenerator
 import hexrts.core.world.definition.TileType
 import hexrts.core.world.tile.BaseTile
@@ -65,7 +65,7 @@ class WorldGenerator {
 
         for (x in -10..10) {
             for (y in -10..10) {
-                world.addChunkIfNotExists(x, y, generateChunk(x, y))
+                world.addChunkIfNotExists(ChunkPosition(x, y), generateChunk(x, y))
             }
         }
 

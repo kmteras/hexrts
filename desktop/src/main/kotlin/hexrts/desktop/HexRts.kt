@@ -19,6 +19,11 @@ class HexRts : KtxGame<Screen>() {
             config.height = DEFAULT_HEIGHT
             config.title = "HexRts"
             config.forceExit = false
+
+            config.vSyncEnabled = false
+            config.foregroundFPS = 0
+            config.backgroundFPS = 0
+
             val application = HexRts()
             LwjglApplication(application, config)
         }

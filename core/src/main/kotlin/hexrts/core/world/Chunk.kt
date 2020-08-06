@@ -3,6 +3,7 @@ package hexrts.core.world
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import hexrts.core.util.TilePosition
 import hexrts.core.world.building.HomeBuilding
 import hexrts.core.world.definition.TileType.*
 import hexrts.core.world.tile.BaseTile
@@ -20,6 +21,11 @@ class Chunk(
     constructor(x: Int, y: Int) : this(Array<Array<BaseTile>>(CHUNK_SIZE) {
         Array(CHUNK_SIZE) { TerrainTile(Grass) }
     }, x, y)
+
+    fun setTile(tilePosition: TilePosition, tile: BaseTile) {
+        val localTilePosition = tilePosition.getLocalPosition()
+        tiles[localTilePosition.y][localTilePosition.x] = tile
+    }
 
     fun getTile(x: Int, y: Int): BaseTile {
         return tiles[y][x]

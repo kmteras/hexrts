@@ -2,6 +2,7 @@ package hexrts.core.world
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
+import hexrts.core.util.ChunkPosition
 
 class World {
     private val chunks = HashMap<Int, HashMap<Int, Chunk>>()
@@ -28,6 +29,10 @@ class World {
         return chunks[x]?.get(y)
     }
 
+    fun getChunk(chunkPosition: ChunkPosition): Chunk? {
+        return getChunk(chunkPosition.x, chunkPosition.y)
+    }
+
     private fun addChunk(x: Int, y: Int, chunk: Chunk) {
         var yMap = chunks[x]
 
@@ -41,6 +46,10 @@ class World {
         }
 
         yMap[y] = chunk
+    }
+
+    private fun addChunk(chunkPosition: ChunkPosition) {
+        addChunk(chunkPosition.x, chunkPosition.y)
     }
 
     private fun addChunk(x: Int, y: Int) {
@@ -81,11 +90,11 @@ class World {
         }
     }
 
-    fun addChunkIfNotExists(x: Int, y: Int, chunk: Chunk) {
-        val existingChunk = getChunk(x, y)
+    fun addChunkIfNotExists(chunkPosition: ChunkPosition, chunk: Chunk) {
+        val existingChunk = getChunk(chunkPosition)
 
         if (existingChunk == null) {
-            addChunk(x, y, chunk)
+            addChunk(chunkPosition.x, chunkPosition.y, chunk)
         }
     }
 }

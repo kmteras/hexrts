@@ -1,5 +1,6 @@
 package hexrts.desktop.input
 
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.Vector2
@@ -28,7 +29,11 @@ class ScreenGestureListener(
 
     override fun tap(x: Float, y: Float, count: Int, button: Int): Boolean {
         val worldCoords = camera.unproject(Vector3(x, y, 0f))
-        selector.selectTile(worldCoords.x.toInt(), worldCoords.y.toInt())
+
+        if (button == Input.Buttons.LEFT) {
+            selector.selectTile(worldCoords.x.toInt(), worldCoords.y.toInt())
+        }
+
         return false
     }
 
