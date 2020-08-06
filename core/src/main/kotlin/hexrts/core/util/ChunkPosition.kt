@@ -1,6 +1,7 @@
 package hexrts.core.util
 
-class ChunkPosition(
-    override val x: Int,
-    override val y: Int
-) : Position
+class ChunkPosition(x: Int, y: Int) : Position(x, y) {
+    override fun toString(): String {
+        return "ChunkPosition($x, $y)"
+    }
+}

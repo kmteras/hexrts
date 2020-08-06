@@ -3,12 +3,10 @@ package hexrts.desktop.screen
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputMultiplexer
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import hexrts.core.util.ChunkPosition
@@ -37,24 +35,20 @@ class RenderScreen(
         font.region.texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
     }
 
-    private val batch = SpriteBatch().apply {
-        color = Color.WHITE
-    }
-
     private lateinit var tilemap: Texture
     private lateinit var objectTilemap: Texture
-    private lateinit var tileSelector: TileSelector
     private val worldGenerator = WorldGenerator()
     private val world = worldGenerator.generateWorld()
+    private val tileSelector = TileSelector(world)
 
     private val polygonBatch = PolygonSpriteBatch()
-    private val gameUI = GameUI(guiViewport)
-    private val buildingService = GuiBuildingService(world, gameUI)
+    private val gameHud = GameHud(guiViewport)
+    private val worldHud = WorldHud(guiViewport, camera, world, tileSelector)
+    private val buildingService = GuiBuildingService(world, gameHud)
 
     override fun show() {
-        tileSelector = TileSelector(world)
         val inputMultiplexer = InputMultiplexer()
-        inputMultiplexer.addProcessor(gameUI.stage)
+        inputMultiplexer.addProcessor(gameHud.stage)
         inputMultiplexer.addProcessor(GestureDetector(ScreenGestureListener(camera, tileSelector, buildingService)))
         inputMultiplexer.addProcessor(ScreenInputProcessor(camera, tileSelector))
         Gdx.input.inputProcessor = inputMultiplexer
@@ -67,27 +61,28 @@ class RenderScreen(
         update(delta)
         camera.update()
 
-        renderChunk()
+        renderWorld()
 
-        gameUI.render(delta)
+        gameHud.render()
     }
 
-    private fun renderChunk() {
+    private fun renderWorld() {
         polygonBatch.projectionMatrix = camera.combined
         polygonBatch.begin()
 
         world.render(polygonBatch, tilemap, objectTilemap, tileSelector)
+        worldHud.render()
 
         polygonBatch.end()
     }
 
     override fun dispose() {
         font.dispose()
-        batch.dispose()
         polygonBatch.dispose()
         tilemap.dispose()
         objectTilemap.dispose()
-        gameUI.dispose()
+        gameHud.dispose()
+        worldHud.dispose()
     }
 
     private fun update(delta: Float) {
@@ -116,7 +111,7 @@ class RenderScreen(
         world.addChunkIfNotExists(ChunkPosition(localX, localY + 1), worldGenerator.generateChunk(localX, localY + 1))
         world.addChunkIfNotExists(ChunkPosition(localX, localY - 1), worldGenerator.generateChunk(localX, localY - 1))
 
-        gameUI.updateText(delta, tileSelector.selectedTile.toString())
+        gameHud.updateText(delta)
     }
 
     override fun resize(width: Int, height: Int) {

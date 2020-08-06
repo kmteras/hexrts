@@ -6,20 +6,18 @@ import hexrts.core.world.tile.TerrainTile
 class TileSelector(
     private val world: World
 ) {
-    var selectedTile: TerrainTile? = null
-    var hoveredTile: TerrainTile? = null
+    var selectedTilePosition: TilePosition.Global? = null
+    var hoveredTilePosition: TilePosition.Global? = null
 
     fun hoverTile(tilePosition: TilePosition.Global) {
-        hoveredTile = getChunkTile(tilePosition)
+        hoveredTilePosition = tilePosition
     }
 
     fun selectTile(tilePosition: TilePosition.Global) {
-        val tile = getChunkTile(tilePosition)
-
-        selectedTile = if (selectedTile == tile) {
+        selectedTilePosition = if (selectedTilePosition == tilePosition) {
             null
         } else {
-            tile
+            tilePosition
         }
     }
 

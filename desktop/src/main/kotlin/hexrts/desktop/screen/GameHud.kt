@@ -8,11 +8,11 @@ import com.badlogic.gdx.utils.viewport.Viewport
 import hexrts.core.world.definition.TileType
 import kotlin.math.roundToInt
 
-class GameUI(private val viewport: Viewport) : Disposable {
-    private val skin = Skin(Gdx.files.internal("data/uiskin.json"))
+class GameHud(private val viewport: Viewport) : Disposable {
     val stage = Stage(viewport)
+
+    private val skin = Skin(Gdx.files.internal("data/uiskin.json"))
     private val fpsLabel = Label("x fps", skin)
-    private val selectedTileText = TextField("Selected tile: x", skin)
     private val screenTable = Table()
     private val buttonsTable = Table(skin)
     private val buttonGroup = ButtonGroup<Button>()
@@ -21,9 +21,7 @@ class GameUI(private val viewport: Viewport) : Disposable {
         screenTable.setFillParent(true)
 
         buttonsTable.setBackground("default-pane")
-        selectedTileText.style.background.topHeight = 10f
 
-        screenTable.add(selectedTileText).left().bottom()
         screenTable.add(buttonsTable).width(250f).height(150f).padRight(2f).padBottom(2f).expand().right().bottom()
 
         buttonsTable.padTop(10f).padLeft(10f).left().top()
@@ -41,12 +39,11 @@ class GameUI(private val viewport: Viewport) : Disposable {
         stage.addActor(fpsLabel)
     }
 
-    fun updateText(delta: Float, selectedTile: String) {
+    fun updateText(delta: Float) {
         fpsLabel.setText("${(1 / delta).roundToInt()} fps")
-        selectedTileText.text = "Selected tile: $selectedTile"
     }
 
-    fun render(delta: Float) {
+    fun render() {
         fpsLabel.setPosition(5f, viewport.topGutterY - 25f)
 
         stage.draw()

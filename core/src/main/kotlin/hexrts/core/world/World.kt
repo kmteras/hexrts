@@ -3,6 +3,8 @@ package hexrts.core.world
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import hexrts.core.util.ChunkPosition
+import hexrts.core.util.TilePosition
+import hexrts.core.world.tile.BaseTile
 
 class World {
     private val chunks = HashMap<Int, HashMap<Int, Chunk>>()
@@ -27,6 +29,10 @@ class World {
 
     fun getChunk(chunkPosition: ChunkPosition): Chunk? {
         return getChunk(chunkPosition.x, chunkPosition.y)
+    }
+
+    fun getTile(tilePosition: TilePosition.Global): BaseTile? {
+        return getChunk(tilePosition.getChunkPosition())?.getTile(tilePosition.getLocalPosition())
     }
 
     private fun addChunk(x: Int, y: Int, chunkGetter: (Int, Int) -> Chunk) {
