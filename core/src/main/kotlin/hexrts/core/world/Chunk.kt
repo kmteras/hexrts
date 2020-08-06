@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import hexrts.core.util.ChunkPosition
 import hexrts.core.util.TilePosition
-import hexrts.core.util.TilePosition.Global.Companion.fromLocalTileAndChunkPosition
 import hexrts.core.world.building.HomeBuilding
-import hexrts.core.world.definition.TileType.*
+import hexrts.core.definition.TileType.*
+import hexrts.core.definition.TilemapReference
 import hexrts.core.world.tile.BaseTile
 import hexrts.core.world.tile.TerrainTile
 import hexrts.core.world.tile.Tile
@@ -37,27 +37,30 @@ class Chunk(
 
                 if (position == tileSelector.hoveredTilePosition?.getChunkPosition()) {
                     if (TilePosition.Local(x, y) == tileSelector.hoveredTilePosition?.getLocalPosition()) {
-                        renderTile(batch, StoreBorder.getTextureRegion(tilemap), x, y)
+                        renderTile(batch, TilemapReference.StoreBorder.getTextureRegion(tilemap), x, y)
                     }
                 }
 
                 if (position == tileSelector.selectedTilePosition?.getChunkPosition()) {
                     if (TilePosition.Local(x, y) == tileSelector.selectedTilePosition?.getLocalPosition()) {
-                        renderTile(batch, SandBorder.getTextureRegion(tilemap), x, y)
+                        renderTile(batch, TilemapReference.SandBorder.getTextureRegion(tilemap), x, y)
                     }
                 }
 
-                if (tile is TerrainTile && tile.building != null) {
-                    val objectRegion = tile.building.type.getTextureRegion(objectTilemap)
-                    val renderOffsetX = getRenderOffset(y)
+                if (tile is TerrainTile) {
+                    val building = tile.building
+                    if (building != null) {
+                        val objectRegion = building.type.getTextureRegion(objectTilemap)
+                        val renderOffsetX = getRenderOffset(y)
 
-                    renderTexture(
-                        batch, objectRegion,
-                        x * Tile.WIDTH + renderOffsetX + Tile.SIZE / 2,
-                        y * (Tile.SIZE * 1.5f - 1f) + Tile.SIZE / 2,
-                        Tile.WIDTH / 2,
-                        Tile.SIZE
-                    )
+                        renderTexture(
+                            batch, objectRegion,
+                            x * Tile.WIDTH + renderOffsetX + Tile.SIZE / 2,
+                            y * (Tile.SIZE * 1.5f - 1f) + Tile.SIZE / 2,
+                            Tile.WIDTH / 2,
+                            Tile.SIZE
+                        )
+                    }
                 }
             }
         }

@@ -1,6 +1,6 @@
 package hexrts.core.exception
 
-import hexrts.core.world.definition.ResourceType
+import hexrts.core.definition.ResourceType
 
 class StorageFullException(resourceType: ResourceType) : RuntimeException() {
 }

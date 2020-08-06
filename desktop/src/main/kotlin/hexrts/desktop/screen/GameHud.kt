@@ -5,7 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.badlogic.gdx.utils.Disposable
 import com.badlogic.gdx.utils.viewport.Viewport
-import hexrts.core.world.definition.TileType
+import hexrts.core.definition.BuildingType
+import hexrts.core.definition.TileType
 import kotlin.math.roundToInt
 
 class GameHud(private val viewport: Viewport) : Disposable {
@@ -16,6 +17,7 @@ class GameHud(private val viewport: Viewport) : Disposable {
     private val screenTable = Table()
     private val buttonsTable = Table(skin)
     private val buttonGroup = ButtonGroup<Button>()
+    private val buildingList: ArrayList<BuildingType> = arrayListOf()
 
     init {
         screenTable.setFillParent(true)
@@ -26,8 +28,8 @@ class GameHud(private val viewport: Viewport) : Disposable {
 
         buttonsTable.padTop(10f).padLeft(10f).left().top()
 
-        buttonGroup.add(addButton("Lumber yard"))
-        buttonGroup.add(addButton("Dirt road"))
+        buttonGroup.add(addButton("Lumber yard", BuildingType.Logging))
+        buttonGroup.add(addButton("Dirt road", BuildingType.Logging))
 
         buttonGroup.setMaxCheckCount(1)
         buttonGroup.setMinCheckCount(0)
@@ -54,17 +56,18 @@ class GameHud(private val viewport: Viewport) : Disposable {
         stage.dispose()
     }
 
-    private fun addButton(text: String): Button {
+    private fun addButton(text: String, buildingType: BuildingType): Button {
         val button = TextButton(text, skin, "toggle")
         buttonsTable.add(button)
+        buildingList.add(buildingType)
         return button
     }
 
-    fun getSelectedTile(): TileType? {
-        return when (buttonGroup.checkedIndex) {
-            0 -> TileType.Lumber
-            1 -> TileType.Dirt
-            else -> null
+    fun getSelectedBuildingType(): BuildingType? {
+        return if (buttonGroup.checkedIndex == -1) {
+            null
+        } else {
+            buildingList[buttonGroup.checkedIndex]
         }
     }
 

@@ -2,7 +2,7 @@ package hexrts.core.world
 
 import hexrts.core.util.ChunkPosition
 import hexrts.core.util.PerlinNoiseGenerator
-import hexrts.core.world.definition.TileType
+import hexrts.core.definition.TileType
 import hexrts.core.world.tile.BaseTile
 import hexrts.core.world.tile.TerrainTile
 

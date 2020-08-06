@@ -1,7 +1,7 @@
 package hexrts.core.world.building
 
 import hexrts.core.exception.StorageFullException
-import hexrts.core.world.definition.ResourceType
+import hexrts.core.definition.ResourceType
 
 class StorageFeature(private val capacity: Long) : BuildingFeature {
     private val storage = HashMap<ResourceType, Long>()

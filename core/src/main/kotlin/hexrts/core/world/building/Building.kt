@@ -1,6 +1,6 @@
 package hexrts.core.world.building
 
-import hexrts.core.world.definition.BuildingType
+import hexrts.core.definition.BuildingType
 
 abstract class Building(override val type: BuildingType) : BaseBuilding {
     private val features = HashMap<Class<out BuildingFeature>, BuildingFeature>()

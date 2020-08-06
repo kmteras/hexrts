@@ -1,7 +1,6 @@
 package hexrts.core.world.tile
 
-import hexrts.core.world.definition.TileType
-import hexrts.core.world.tile.BaseTile
+import hexrts.core.definition.TileType
 import kotlin.math.sqrt
 
 abstract class Tile(override val type: TileType) : BaseTile {
