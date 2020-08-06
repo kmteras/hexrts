@@ -52,10 +52,10 @@ class RenderScreen(
     private val buildingService = GuiBuildingService(world, gameUI)
 
     override fun show() {
-        tileSelector = TileSelector(world, buildingService)
+        tileSelector = TileSelector(world)
         val inputMultiplexer = InputMultiplexer()
         inputMultiplexer.addProcessor(gameUI.stage)
-        inputMultiplexer.addProcessor(GestureDetector(ScreenGestureListener(camera, tileSelector)))
+        inputMultiplexer.addProcessor(GestureDetector(ScreenGestureListener(camera, tileSelector, buildingService)))
         inputMultiplexer.addProcessor(ScreenInputProcessor(camera, tileSelector))
         Gdx.input.inputProcessor = inputMultiplexer
 

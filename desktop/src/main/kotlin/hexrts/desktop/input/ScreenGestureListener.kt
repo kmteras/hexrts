@@ -5,11 +5,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.input.GestureDetector
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import hexrts.core.util.WorldUtil.getGlobalTileLocation
+import hexrts.core.world.BuildingService
 import hexrts.core.world.TileSelector
 
 class ScreenGestureListener(
     private val camera: OrthographicCamera,
-    private val selector: TileSelector
+    private val selector: TileSelector,
+    private val buildingService: BuildingService
 ) : GestureDetector.GestureListener {
     override fun fling(velocityX: Float, velocityY: Float, button: Int): Boolean {
         return false
@@ -30,8 +33,13 @@ class ScreenGestureListener(
     override fun tap(x: Float, y: Float, count: Int, button: Int): Boolean {
         val worldCoords = camera.unproject(Vector3(x, y, 0f))
 
+        val globalTilePosition = getGlobalTileLocation(worldCoords.x.toInt(), worldCoords.y.toInt())
+
         if (button == Input.Buttons.LEFT) {
-            selector.selectTile(worldCoords.x.toInt(), worldCoords.y.toInt())
+            selector.selectTile(globalTilePosition)
+            buildingService.build(globalTilePosition)
+        } else if (button == Input.Buttons.RIGHT) {
+            buildingService.deselect()
         }
 
         return false
