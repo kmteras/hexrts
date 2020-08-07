@@ -33,7 +33,7 @@ class ScreenGestureListener(
     override fun tap(x: Float, y: Float, count: Int, button: Int): Boolean {
         val worldCoords = camera.unproject(Vector3(x, y, 0f))
 
-        val globalTilePosition = getGlobalTileLocation(worldCoords.x.toInt(), worldCoords.y.toInt())
+        val globalTilePosition = getGlobalTileLocation(worldCoords.x, worldCoords.y)
 
         if (button == Input.Buttons.LEFT) {
             selector.selectTile(globalTilePosition)

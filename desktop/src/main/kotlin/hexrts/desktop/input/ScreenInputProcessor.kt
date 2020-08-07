@@ -25,7 +25,7 @@ class ScreenInputProcessor(
 
     override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
         val worldCoords = camera.unproject(Vector3(screenX.toFloat(), screenY.toFloat(), 0f))
-        val tilePosition = WorldUtil.getGlobalTileLocation(worldCoords.x.toInt(), worldCoords.y.toInt())
+        val tilePosition = WorldUtil.getGlobalTileLocation(worldCoords.x, worldCoords.y)
 
         selector.hoverTile(tilePosition)
         return false
